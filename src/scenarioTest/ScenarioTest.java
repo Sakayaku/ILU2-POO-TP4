@@ -18,7 +18,7 @@ public class ScenarioTest {
 	
 	Gaulois ordralfabetix = new Gaulois("Ordralfabétix",9);
 	Gaulois obelix = new Gaulois("Obélix",20);
-	Gaulois asterix = new Gaulois("Asterix", 6);
+	Gaulois asterix = new Gaulois("Astérix", 6);
 	
 	Sanglier sanglier1 = new Sanglier(2000, obelix);
 	Sanglier sanglier2 = new Sanglier(1500, obelix);
@@ -36,9 +36,31 @@ public class ScenarioTest {
 	marche[0]=etalSanglier1;
 	marche[1]=etalSanglier2;
 	marche[2]=etalPoisson;
-	marche[0].installerVendeur(obelix, sangliersObelix, 8);
-	marche[1].installerVendeur(asterix, sangliersAsterix, 10);
+	marche[0].installerVendeur(asterix, sangliersAsterix, 10);
+	marche[1].installerVendeur(obelix, sangliersObelix, 8);
 	marche[2].installerVendeur(ordralfabetix, poissons, 7);
+	System.out.println("ETAT MARCHE");
+	for (int i=0;i<marche.length;i++) {
+		System.out.println(marche[i].etatEtal());
+	}
+	int nbSanglierVoulu=3;
+	int nbSanglierTrouve=0;
+	int compteur=0;
+	int etalVisite=0;
+	while ((compteur<nbSanglierVoulu && nbSanglierTrouve!=nbSanglierVoulu) || etalVisite<marche.length) {
+		int nbSanglier=marche[compteur].contientProduit("sanglier", (nbSanglierVoulu-nbSanglierTrouve));
+		if (nbSanglier!=0) {
+			System.out.println("A l'étal "+compteur+" je paye "+marche[compteur].acheterProduit(nbSanglier)+" sous.");
+		}
+		nbSanglierTrouve+=nbSanglier;
+		etalVisite+=1;
+		compteur+=1;
+	}
+	System.out.println("Je voulais "+nbSanglierVoulu+" sanglier, j'en ai acheté "+nbSanglierVoulu);
+	System.out.println("ETAT MARCHE");
+	for (int i=0;i<marche.length;i++) {
+		System.out.println(marche[i].etatEtal());
+	}
 	}
 	
 }

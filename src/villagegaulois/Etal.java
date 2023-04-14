@@ -3,16 +3,17 @@ package villagegaulois;
 import personnages.Gaulois;
 import produit.IProduit;
 
-public class Etal<P> implements IEtal {
+public class Etal<P extends IProduit> implements IEtal {
 	private Gaulois vendeur;
-	private IProduit<Etal>[] produits;
+	private P[] produits;
 	int nbProduit;
 	int prixProduit;
 	
 	public void installerVendeur(Gaulois vendeur, P[] produit, int prix) {
 		this.vendeur=vendeur;
+		this.produits=produit;
+		this.nbProduit=produit.length;
 		this.prixProduit=prix;
-		produits=new IProduit[nbProduit];
 	}
 	
 	@Override
