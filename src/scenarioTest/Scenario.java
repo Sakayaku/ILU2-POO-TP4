@@ -5,6 +5,7 @@ import produit.Poisson;
 import produit.Produit;
 import produit.Sanglier;
 import villagegaulois.Etal;
+import villagegaulois.IEtal;
 //import villagegauloisold.Etal;
 import villagegaulois.IVillage;
 import villagegauloisold.DepenseMarchand;
@@ -14,23 +15,49 @@ public class Scenario {
 	public static void main(String[] args) {
 
 		// TODO Partie 4 : creer de la classe anonyme Village
-		class Village implements IVillage{
-
+		IVillage village = new IVillage() {
+			private IEtal[] marche = new IEtal[24]; 
+			private int nbEtalOccupes = 0;
 			@Override
 			public <P extends Produit> boolean installerVendeur(Etal<P> etal, Gaulois vendeur, P[] produit, int prix) {
-				return false;
+				if (nbEtalOccupes < marche.length) {
+					  marche[nbEtalOccupes] = etal;
+					  nbEtalOccupes++;
+					  etal.installerVendeur(vendeur, produit, prix);
+					  return true;
+				}
+					return false;
 			}
 
 			@Override
 			public DepenseMarchand[] acheterProduit(String produit, int quantiteSouhaitee) {
-				return null;
+				int i=0;
+				int nbDepense=0;
+				DepenseMarchand[] depenseMarchands = new DepenseMarchand[marche.length];
+				while ((i < nbEtalOccupes && quantiteSouhaitee > 0)) {
+					int quantiteDisponible = marche[i].contientProduit(produit, quantiteSouhaitee);
+					if (quantiteDisponible>0) {
+						double prixPaye=marche[i].acheterProduit(quantiteDisponible);
+						quantiteSouhaitee-=quantiteDisponible;
+						depenseMarchands[nbDepense]=new DepenseMarchand(marche[i].getVendeur(), quantiteDisponible, produit, prixPaye);
+						nbDepense++;
+					}
+					i++;
+				}
+				return depenseMarchands;
+			}
+			@Override
+			public String toString() {
+				StringBuilder chaine = new StringBuilder();
+				for (int i=0;i<nbEtalOccupes;i++) {
+					chaine.append(marche[i].etatEtal());
+				}
+				return chaine.toString();
 			}
 			
-		}
+		};
 		// fin
 		
-		//Etal[] marche = new IEtal();
-		Village village = new Village();
 		
 		Gaulois ordralfabetix = new Gaulois("Ordralfabétix", 9);
 		Gaulois obelix = new Gaulois("Obélix", 20);
